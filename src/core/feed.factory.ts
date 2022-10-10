@@ -49,6 +49,7 @@ import {
   StoryPollVotersFeedResponseRootObject,
   StoryPollVotersFeedResponseVotersItem,
 } from '../responses';
+import { AccountFollowersInfoFeed } from '../feeds/account-followers-info.feed';
 
 export class FeedFactory {
   constructor(private client: IgApiClient) {}
@@ -77,6 +78,10 @@ export class FeedFactory {
       id: options && typeof options !== 'object' ? options : this.client.state.cookieUserId,
       ...(typeof options === 'object' ? options : undefined),
     });
+  }
+
+  public accountFollowersInfo({ id }: { id: string }): AccountFollowersInfoFeed {
+    return plainToClassFromExist(new AccountFollowersInfoFeed(this.client), { id: id });
   }
 
   public news(): NewsFeed {
