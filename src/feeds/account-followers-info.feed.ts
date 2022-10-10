@@ -13,15 +13,16 @@ export class AccountFollowersInfoFeed extends Feed<AccountFollowersInfoResponse,
   }
 
   async request() {
+    const variables = JSON.stringify({
+      id: this.id,
+      first: 50,
+      after: this.nextPageToken,
+    })
     const { body } = await this.client.request.send<AccountFollowersInfoResponse>({
       url: '/graphql/query/',
       qs: {
         query_hash: '37479f2b8209594dde7facb0d904896a',
-        variables: {
-          id: this.id,
-          first: 50,
-          after: this.nextPageToken,
-        },
+        variables: variables,
       },
     });
     this.state = body;
