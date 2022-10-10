@@ -35,13 +35,16 @@ export abstract class Feed<Response = any, Item = any> extends Repository {
               {
                 handleError(error, context) {
                   // If instagram just tells us to wait - we are waiting.
+                  console.error(`Erro na api do Instagram status: ${error?.response?.statusCode}`)
                   if (
                     error instanceof IgResponseError &&
                     [400, 429, 500, 502].includes(error.response.statusCode) &&
                     subscribed
                   ) {
+                    console.log('Too many requests or error, retry again')
                     return;
                   } else {
+                    console.log('Aborting calls on Instagram Api')
                     context.abort();
                   }
                 },
