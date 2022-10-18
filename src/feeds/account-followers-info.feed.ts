@@ -1,15 +1,24 @@
 import { Feed } from '../core/feed';
 import { Expose, plainToClassFromExist } from 'class-transformer';
 import { AccountFollowersInfoResponse, AccountFollowersInfoResponseEdgeNode } from '../responses';
+import { AccountFollowersInfoFeedPageInfoOptions } from 'src/types/account-followers-feed.options';
 
 export class AccountFollowersInfoFeed extends Feed<AccountFollowersInfoResponse, AccountFollowersInfoResponseEdgeNode> {
   id: number | string;
   @Expose()
   public nextPageToken: string;
+  @Expose()
+  public currentPagePosition: number = 0;
 
   set state(body: AccountFollowersInfoResponse) {
     this.moreAvailable = !!body?.data.user?.edge_followed_by?.page_info?.has_next_page;
     this.nextPageToken = body?.data.user?.edge_followed_by?.page_info?.end_cursor;
+    this.currentPagePosition++;
+  }
+
+  set pageInfo(pageInfo: AccountFollowersInfoFeedPageInfoOptions) {
+    this.nextPageToken = pageInfo.token;
+    this.currentPagePosition = pageInfo.position || 0;
   }
 
   async request() {

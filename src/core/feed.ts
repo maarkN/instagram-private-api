@@ -15,9 +15,15 @@ export abstract class Feed<Response = any, Item = any> extends Repository {
     maxDelay: 300000,
     jitter: true,
   };
+
   public get items$() {
     return this.observable();
   }
+
+  public itemsPametrized$(callback?: () => Promise<any>, attemptOptions?: Partial<AttemptOptions<any>>) {
+    return this.observable(callback, attemptOptions);
+  }
+
   public observable(semaphore?: () => Promise<any>, attemptOptions?: Partial<AttemptOptions<any>>) {
     return new Observable<Item[]>(observer => {
       let subscribed = true;
@@ -59,10 +65,13 @@ export abstract class Feed<Response = any, Item = any> extends Repository {
       };
     });
   }
+
   @Expose()
   protected moreAvailable: boolean;
+
   @Enumerable(false)
   protected chance = new Chance();
+
   @Expose()
   protected rankToken = this.chance.guid();
 
