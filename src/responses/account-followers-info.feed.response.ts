@@ -6,7 +6,7 @@ export class AccountFollowersInfoResponseEdgeNode extends ProfileEntity {
   id: string;
   is_verified: boolean;
   profile_pic_url: string;
-  requested_by_viewver: false;
+  requested_by_viewer: false;
   username: string;
 }
 
