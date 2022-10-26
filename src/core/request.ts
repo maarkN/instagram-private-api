@@ -56,7 +56,11 @@ export class Request {
     return resolveWithFullResponse ? response : response.body;
   }
 
-  public async send<T = any>(userOptions: Options, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
+  public async send<T = any>(
+    userOptions: Options,
+    onlyCheckHttpStatus?: boolean,
+    printLimits?: boolean,
+  ): Promise<IgResponse<T>> {
     const options = defaultsDeep(
       userOptions,
       {
@@ -74,7 +78,9 @@ export class Request {
       this.defaults,
     );
     Request.requestDebug(`Requesting ${options.method} ${options.url || options.uri || '[could not find url]'}`);
+
     const response = await this.faultTolerantRequest(options);
+
     this.updateState(response);
     process.nextTick(() => this.end$.next());
     if (response.body.status === 'ok' || (onlyCheckHttpStatus && response.statusCode === 200)) {
@@ -196,7 +202,9 @@ export class Request {
       'X-IG-Bandwidth-TotalBytes-B': '0',
       'X-IG-Bandwidth-TotalTime-MS': '0',
       'X-IG-EU-DC-ENABLED':
-        typeof this.client.state.euDCEnabled === 'undefined' ? void 0 : this.client.state.euDCEnabled.toString(),
+        typeof this.client.state.euDCEnabled === 'undefined' || this.client.state.euDCEnabled
+          ? void 0
+          : this.client.state.euDCEnabled.toString(),
       'X-IG-Extended-CDN-Thumbnail-Cache-Busting-Value': this.client.state.thumbnailCacheBustingValue.toString(),
       'X-Bloks-Version-Id': this.client.state.bloksVersionId,
       'X-MID': this.client.state.extractCookie('mid')?.value,

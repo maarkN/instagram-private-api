@@ -6,7 +6,7 @@ import { AccountFollowersInfoFeedPageInfoOptions } from 'src/types/account-follo
 export class AccountFollowersInfoFeed extends Feed<AccountFollowersInfoResponse, AccountFollowersInfoResponseEdgeNode> {
   id: number | string;
   @Expose()
-  public nextPageToken: string;
+  public nextPageToken?: string;
   @Expose()
   public currentPagePosition: number = 0;
 
